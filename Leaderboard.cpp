@@ -3,23 +3,70 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
-#include <algorithm>
 #include <iostream>
 
-void Leaderboard::insert_new_entry(LeaderboardEntry * new_entry) {
-    // TODO: Insert a new LeaderboardEntry instance into the leaderboard, such that the order of the high-scores
-    //       is maintained, and the leaderboard size does not exceed 10 entries at any given time (only the
-    //       top 10 all-time high-scores should be kept in descending order by the score).
+void Leaderboard::insert_new_entry(LeaderboardEntry* new_entry) {
+    // Check if the new entry is valid
+    if (new_entry == nullptr) {
+        std::cerr << "Invalid new entry." << std::endl;
+        return;
+    }
+
+    // Handle the case where the leaderboard is empty
+    if (head_leaderboard_entry == nullptr) {
+        head_leaderboard_entry = new_entry;
+        return;
+    }
+
+    // Inserting in a non-empty list
+    LeaderboardEntry* current = head_leaderboard_entry;
+    LeaderboardEntry* previous = nullptr;
+
+    while (current != nullptr && current->score > new_entry->score) {
+        previous = current;
+        current = current->next_leaderboard_entry;
+    }
+
+    // Insert new_entry before the current node
+    if (previous != nullptr) { // Inserting somewhere after the head
+        previous->next_leaderboard_entry = new_entry;
+    } else { // Inserting at the head
+        head_leaderboard_entry = new_entry;
+    }
+    new_entry->next_leaderboard_entry = current;
+
+    // Ensure leaderboard size does not exceed 10
+    current = head_leaderboard_entry;
+    int count = 1;
+    while (current != nullptr && count < 10) {
+        previous = current;
+        current = current->next_leaderboard_entry;
+        count++;
+    }
+
+    // If the leaderboard has more than 10 entries, trim the last one
+    if (current != nullptr) {
+        previous->next_leaderboard_entry = nullptr;
+        // Delete the extra entry if you are managing memory, e.g., delete current;
+    }
 }
 
+
 void Leaderboard::write_to_file(const string& filename) {
-    // TODO: Write the latest leaderboard status to the given file in the format specified in the PA instructions
+    // 1. Open the file
+    std::ofstream file(filename);
+    LeaderboardEntry* current = head_leaderboard_entry;
+
+    while (current != nullptr) {
+        // 2. Write the leaderboard entry to the file
+        file << current->score << ' ' << current->last_played << ' ' << current->player_name << '\n';
+        current = current->next_leaderboard_entry;
+    }    
 }
 
 void Leaderboard::read_from_file(const string& filename) {
     std::ifstream file(filename);
     std::string line;
-    std::vector<LeaderboardEntry*> entries;
 
     // Read each line and create LeaderboardEntry objects
     while (std::getline(file, line)) {
@@ -29,22 +76,10 @@ void Leaderboard::read_from_file(const string& filename) {
         std::string playerName;
 
         if (iss >> score >> lastPlayed >> playerName) {
-            entries.push_back(new LeaderboardEntry(score, lastPlayed, playerName));
+            LeaderboardEntry newEntry = LeaderboardEntry(score, lastPlayed, playerName);
+            insert_new_entry(&newEntry);
         }
     }
-
-    // Sort the entries in descending order of score
-    std::sort(entries.begin(), entries.end(), [](const LeaderboardEntry* a, const LeaderboardEntry* b) {
-        return a->score > b->score;
-    });
-
-    // Link the entries
-    for (size_t i = 0; i < entries.size(); ++i) {
-        entries[i]->next_leaderboard_entry = (i + 1 < entries.size()) ? entries[i + 1] : nullptr;
-    }
-
-    // Set the head_leaderboard_entry to point to the entry with the highest score
-    head_leaderboard_entry = entries.empty() ? nullptr : entries.front();
 
     // Close the file
     file.close();
@@ -66,8 +101,6 @@ void Leaderboard::print_leaderboard() {
         
         // rank - name - score - last played
         // 1. BlockBuster 40000 20:50:55/21.10.2023
-        // 2. StackOverthrower 1200 20:50:55/21.10.2023
-
 
         // Print the leaderboard entry
         std::cout << rank << '.' << ' ' << current->player_name << ' ' << current->score << ' '
