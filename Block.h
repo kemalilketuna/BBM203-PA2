@@ -14,12 +14,16 @@ public:
     Block * next_block = nullptr; // Pointer to the next block to appear in the game
 
     bool operator==(const Block& other) const {
-        // TODO: Overload the == operator to compare two blocks based on their shapes
+        if (this->shape == other.shape) {
+            return true;
+        }
         return false;
     }
 
     bool operator!=(const Block& other) const {
-        // TODO: Overload the != operator to compare two blocks based on their shapes
+        if (this->shape != other.shape) {
+            return true;
+        }
         return false;
     }
 };
