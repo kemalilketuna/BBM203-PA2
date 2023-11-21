@@ -91,6 +91,18 @@ public:
             throw "circular linked list is not created properly";
         }
     }
+
+    void delete_block() {
+        if (this->next_block != nullptr) {
+            this->next_block->delete_block();
+        }
+        if (this->right_rotation != nullptr) {
+            if (this->right_rotation->right_rotation != this) {
+                this->right_rotation->delete_block();
+            }
+        }
+        delete this;
+    }
 };
 
 

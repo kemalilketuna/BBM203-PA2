@@ -21,16 +21,11 @@ void BlockFall::read_blocks(const string &input_file) {
     // open the file
     ifstream file(input_file);
     string line;
-
-    cout << static_cast<int>('\r') << 'test' << endl;
+    
     vector<vector<bool>> matrix;
     while (getline(file, line))
     {
-        for (char c : line)
-        {
-            cout << static_cast<int>(c) << " ";
-        }
-        cout << endl;
+    
     }
     
     // close the file
@@ -45,4 +40,6 @@ void BlockFall::initialize_grid(const string &input_file) {
 
 BlockFall::~BlockFall() {
     // TODO: Free dynamically allocated memory used for storing game blocks
+    //implement recursive delete function in block.h
+    initial_block->delete_block();
 }
