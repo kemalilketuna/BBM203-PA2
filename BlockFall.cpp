@@ -21,7 +21,7 @@ void BlockFall::read_blocks(const string &input_file) {
     // open the file
     ifstream file(input_file);
     string line;
-    
+
     vector<vector<bool>> matrix;
     while (getline(file, line))
     {
@@ -35,11 +35,34 @@ void BlockFall::read_blocks(const string &input_file) {
 void BlockFall::initialize_grid(const string &input_file) {
     // TODO: Initialize "rows" and "cols" member variables
     // TODO: Initialize "grid" member variable using the command-line argument 1 in main
+    ifstream file(input_file);
+    string line;
+
+    if(!grid.empty()){
+        throw "grid is already initialized";
+    }
+
+    while (getline(file, line))
+    {
+        vector<int> row;
+        for (char c : line){
+            if (c == '1'){
+                row.push_back(1);
+            }
+            else if (c == '0'){
+                row.push_back(0);
+            }
+        }
+        grid.push_back(row);
+    }
+    rows = grid.size();
+    cols = grid.at(0).size();
+    file.close();
 }
 
 
 BlockFall::~BlockFall() {
     // TODO: Free dynamically allocated memory used for storing game blocks
     //implement recursive delete function in block.h
-    initial_block->delete_block();
+    // initial_block->delete_block();
 }

@@ -22,7 +22,7 @@ public:
 
     int rows;  // Number of rows in the grid
     int cols;  // Number of columns in the grid
-    vector<vector<int> > grid;  // 2D game grid
+    vector<vector<int>> grid;  // 2D game grid
     vector<vector<bool>> power_up; // 2D matrix of the power-up shape
     Block * initial_block = nullptr; // Head of the list of game blocks. Must be filled up and initialized after a call to read_blocks()
     Block * active_rotation = nullptr; // Currently active rotation of the active block. Must start with the initial_block
