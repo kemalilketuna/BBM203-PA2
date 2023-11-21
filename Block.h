@@ -29,13 +29,14 @@ public:
 
     vector<vector<bool>> cw_90_rotation(vector<vector<bool>> & matrix) {
         int n = matrix.size();
-        vector<vector<bool>> new_matrix(n, vector<bool>(n));
+        int m = matrix.at(0).size();
+        vector<vector<bool>> rotated_matrix(m, vector<bool>(n));
         for (int i = 0; i < n; i++) {
-            for (int j = n-1; j >= 0; j--) {
-                new_matrix[i][n-1-j] = matrix[j][i];
+            for (int j = m - 1; j >= 0; j--) {
+                rotated_matrix.at(m - j - 1).at(i) = matrix.at(i).at(j);
             }
         }
-        return new_matrix;
+        return rotated_matrix;
     }
 
     void set_shape(vector<vector<bool>> shape) {

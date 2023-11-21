@@ -3,30 +3,29 @@
 #include <vector>
 #include <string>
 
+#include "Block.h"
+
 
 using namespace std;
 
-void read_blocks(const string &input_file) {
-    ifstream file(input_file);
-    string line;
-
-    cout << static_cast<int>('\r') <<endl;
-    vector<vector<bool>> matrix;
-    while (getline(file, line))
-    {
-        for (char c : line)
-        {
-            cout << static_cast<int>(c) << " ";
+void print2dMatrix(vector<vector<bool>> matrix) {
+    for (auto row : matrix) {
+        for (auto cell : row) {
+            cout << cell << " ";
         }
         cout << endl;
     }
-    
-    // close the file
-    file.close();
 }
 
 int main() {
-    string filename = "C:\\Users\\kemal\\Documents\\203 assignments\\assignment 2\\sampleIO\\1_big_grid_gravity_switch\\blocks.dat"; // Replace with your file's name and path
-    read_blocks(filename);
+    std::vector<std::vector<bool>> matrix = {
+        {1, 0, 1},
+        {1, 1, 1},
+        {0, 0, 0}
+    };
+
+    Block block;
+    block.set_shape(matrix);
+    cout << (block == *block.right_rotation->right_rotation->right_rotation->left_rotation->left_rotation) << endl;
     return 0;
 }
