@@ -93,18 +93,22 @@ public:
         }
     }
 
-    void delete_block() {
-        if (this->next_block != nullptr) {
-            this->next_block->delete_block();
+    void delete_one_block_chain() {
+        Block * r1 = this->right_rotation;
+        Block * r2 = r1->right_rotation;
+        Block * r3 = r2->right_rotation;
+
+        if (r1 != this && r1 != nullptr && r1 != r2 && r1 != r3){
+            delete r1;
         }
-        if (this->right_rotation != nullptr) {
-            if (this->right_rotation->right_rotation != this) {
-                this->right_rotation->delete_block();
-            }
+        if (r2 != this && r2 != nullptr && r2 != r3){
+            delete r2;
+        }
+        if (r3 != this && r3 != nullptr){
+            delete r3;
         }
         delete this;
     }
 };
-
 
 #endif //PA2_BLOCK_H

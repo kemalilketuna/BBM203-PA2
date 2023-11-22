@@ -12,6 +12,7 @@ BlockFall::BlockFall(string grid_file_name, string blocks_file_name, bool gravit
     leaderboard.read_from_file(leaderboard_file_name);
 }
 
+
 void BlockFall::read_blocks(const string &input_file) {
     // TODO: Read the blocks from the input file and initialize "initial_block" and "active_rotation" member variables
     // TODO: For every block, generate its rotations and properly implement the multilevel linked list structure
@@ -19,51 +20,52 @@ void BlockFall::read_blocks(const string &input_file) {
     // TODO: Initialize the "power_up" member variable as the last block from the input file (do not add it to the linked list!)
     
     // open the file
-    cout << "reading blocks" << endl;
     ifstream file(input_file);
     string line;
 
+    Block * last2 = nullptr;
     vector<vector<bool>> matrix;
     while (getline(file, line))
     {
-        if (line[0] != '\r'){
-            vector<bool> row;
-            for (char c : line){
-                if (c == '1'){
-                    row.push_back(true);
-                }
-                else if (c == '0'){
-                    row.push_back(false);
-                }
+        vector<bool> row;
+        for (char c : line){
+            if (c == '1'){
+                row.push_back(1);
             }
+            else if (c == '0'){
+                row.push_back(0);
+            }else if (c == ']'){
+                matrix.push_back(row);
+                row.clear();
+                Block * block = new Block();
+                block->set_shape(matrix);
+                if(initial_block == nullptr){
+                    initial_block = block;
+                    active_rotation = block;
+                }else{
+                    last2 = active_rotation;
+                    active_rotation->set_next_block(block);
+                    active_rotation = block;
+                }
+                matrix.clear();
+            }
+        }
+        if(!row.empty()){
             matrix.push_back(row);
-        }else{
-            Block * block = new Block();
-            block->set_shape(matrix);
-            if (initial_block == nullptr){
-                initial_block = block;
-                active_rotation = block;
-            }else{
-                active_rotation->set_next_block(block);
-            }
-            //clear the matrix
-            matrix.clear();
         }
     }
 
-    power_up = active_rotation->next_block->shape;
-    delete active_rotation->next_block;
+    // // set power_up
+    power_up = active_rotation->shape;
     
+    last2->next_block = nullptr;
+    active_rotation->delete_one_block_chain();
+
+    // set initial  pointer to the first active rotation
+    active_rotation = initial_block;
+
     // close the file
     file.close();
-
-    Block * temp = initial_block;
-    while (temp != nullptr){
-        cout << temp->shape.size() << 'x' << temp->shape.at(0).size() << endl;
-        temp = temp->next_block;
-    }
-    cout << "initial block is null" << endl;
-    
 }
 
 void BlockFall::initialize_grid(const string &input_file) {
@@ -97,8 +99,10 @@ void BlockFall::initialize_grid(const string &input_file) {
 
 BlockFall::~BlockFall() {
     // TODO: Free dynamically allocated memory used for storing game blocks
-    //implement recursive delete function in block.h
-    if (initial_block != nullptr){
-        initial_block->delete_block();
+    while(initial_block != nullptr){
+        Block * temp = initial_block;
+        initial_block = initial_block->next_block;
+        temp->delete_one_block_chain();
+        
     }
 }
