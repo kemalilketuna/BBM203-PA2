@@ -54,18 +54,20 @@ void BlockFall::read_blocks(const string &input_file) {
             matrix.push_back(row);
         }
     }
+    
+    // close the file
+    file.close();
 
     // // set power_up
     power_up = active_rotation->shape;
     
-    last2->next_block = nullptr;
+    last2->set_next_block(nullptr);
     active_rotation->delete_one_block_chain();
 
     // set initial  pointer to the first active rotation
     active_rotation = initial_block;
 
-    // close the file
-    file.close();
+
 }
 
 void BlockFall::initialize_grid(const string &input_file) {

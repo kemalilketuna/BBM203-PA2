@@ -80,9 +80,9 @@ public:
     }
 
     void set_next_block(Block * next) {
-        if (this->next_block != nullptr) {
-            throw "next block is already initialized";
-        }
+        // if (this->next_block != nullptr) {
+        //     throw "next block is already initialized";
+        // }
         this->next_block = next;
         if (this->right_rotation != nullptr) {
             if (this->right_rotation->next_block != next){
