@@ -32,8 +32,8 @@ public:
         int m = matrix.at(0).size();
         vector<vector<bool>> rotated_matrix(m, vector<bool>(n));
         for (int i = 0; i < n; i++) {
-            for (int j = m - 1; j >= 0; j--) {
-                rotated_matrix.at(m - j - 1).at(i) = matrix.at(i).at(j);
+            for (int j = 0; j < m; j++) {
+                rotated_matrix[j][n - i - 1] = matrix[i][j];
             }
         }
         return rotated_matrix;
