@@ -5,6 +5,7 @@
 #define unoccupiedCellChar "▒▒"
 
 #include <vector>
+#include <iostream>
 
 using namespace std;
 

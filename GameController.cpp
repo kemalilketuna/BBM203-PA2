@@ -13,7 +13,7 @@ bool GameController::play(BlockFall& game, const string& commands_file){
     {
         //PRINT_GRID
         if(line == "PRINT_GRID"){
-            //do something
+            print_grid_and_score(game);
         }
         //ROTATE_RIGHT
         else if(line == "ROTATE_RIGHT"){
@@ -47,7 +47,7 @@ bool GameController::play(BlockFall& game, const string& commands_file){
 }
 
 void GameController::print_game_over(BlockFall &game){
-    cout << "Game Over!" << endl;
+    cout << "GAME OVER!" << endl;
     cout << "Next block that couldn't be fit:" << endl;
     game.active_rotation->print();
     cout << endl;
@@ -55,8 +55,9 @@ void GameController::print_game_over(BlockFall &game){
     cout << endl;
     print_grid_and_score(game);
     cout << endl;
-    game.leaderboard.print();
+    game.leaderboard.print_leaderboard();
 }
+
 void GameController::print_no_more_commands(BlockFall &game){}
 void GameController::print_no_more_blocks(BlockFall &game){}
 void GameController::print_leaderboard(BlockFall &game){}
