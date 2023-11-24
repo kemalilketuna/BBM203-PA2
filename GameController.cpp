@@ -1,6 +1,7 @@
 #include "GameController.h"
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 #include <thread> // REMOVE IT LATER
 #include <chrono> // REMOVE IT LATER
 
@@ -80,7 +81,37 @@ void GameController::print_no_more_blocks(BlockFall &game){
     game.leaderboard.print_leaderboard();
 }
 
-void GameController::swith_gravity(BlockFall &game){}
+void GameController::swith_gravity(BlockFall &game){
+    // calculate a row how many ones
+    int[game.cols] ones;
+    for (int row = 0; row < game.rows; row++) { // for each
+        for (int col = 0; col < game.cols; col++) {
+            if (game.grid[row][col] == 1) {
+                ones[col] += 1;
+            }
+        }
+    }
+
+    // fill grid with ones bottom up
+    for (int row = game - 1; row >= 0; row--) { // for each
+        for (int col = 0; col < game.cols; col++) {
+            if (ones[col] > 0) {
+                game.grid[row][col] = 1;
+                ones[col] -= 1;
+            } else {
+                game.grid[row][col] = 0;
+            }
+        }
+    }
+
+    // clear filled rows
+    clear_rows(game);
+
+    // switch gravity
+    game.gravity = !game.gravity;
+}
+
+
 void GameController::move_right(BlockFall &game){}
 void GameController::move_left(BlockFall &game){}
 void GameController::rotate_right(BlockFall &game){}
@@ -92,7 +123,18 @@ void GameController::spawn_block(BlockFall &game){
     // else game over
     // check active rotation is correct
     print_grid_and_score(game);
- }
+}
+
+void GameController::clear_rows(BlockFall &game){
+    int rowCount = game.rows;
+    for (int i = 0; i < rowCount; i++) {
+        if (std::all_of(game.grid[i].begin(), game.grid[i].end(), [](int i) { return i == 1; })) {
+            game.grid.erase(game.grid.begin() + i);
+            game.grid.insert(game.grid.begin(), vector<int>(game.cols, 0));
+            // update score
+        }
+    }
+}
 
 int GameController::athHighScore(BlockFall &game){
     if(game.leaderboard.head_leaderboard_entry == nullptr){

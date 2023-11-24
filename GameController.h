@@ -23,6 +23,7 @@ private:
     void rotate_left(BlockFall &game);
     void drop(BlockFall &game);
     void spawn_block(BlockFall &game);
+    void clear_rows(BlockFall &game);
 };
 
 
