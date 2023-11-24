@@ -12,31 +12,31 @@ bool GameController::play(BlockFall& game, const string& commands_file){
     while (getline(file, line))
     {
         //PRINT_GRID
-        if(line == "PRINT_GRID"){
+        if(line == "PRINT_GRID\r"){
             print_grid_and_score(game);
         }
         //ROTATE_RIGHT
-        else if(line == "ROTATE_RIGHT"){
+        else if(line == "ROTATE_RIGHT\r"){
             //do something
         }
         //ROTATE_LEFT
-        else if(line == "ROTATE_LEFT"){
+        else if(line == "ROTATE_LEFT\r"){
             //do something
         }
         //MOVE_RIGHT
-        else if(line == "MOVE_RIGHT"){
+        else if(line == "MOVE_RIGHT\r"){
             //do something
         }
         //MOVE_LEFT
-        else if(line == "MOVE_LEFT"){
+        else if(line == "MOVE_LEFT\r"){
             //do something
         }
         //GRAVITY_SWITCH
-        else if(line == "GRAVITY_SWITCH"){
+        else if(line == "GRAVITY_SWITCH\r"){
             //do something
         }
         //DROP
-        else if(line == "DROP"){
+        else if(line == "DROP\r"){
             //do something
         }
         //REMOVE IT LATER
