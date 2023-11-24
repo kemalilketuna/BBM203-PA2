@@ -14,6 +14,8 @@ bool GameController::play(BlockFall& game, const string& commands_file){
         //PRINT_GRID
         if(line == "PRINT_GRID\r"){
             print_grid_and_score(game);
+            cout << endl;
+            cout << endl;
         }
         //ROTATE_RIGHT
         else if(line == "ROTATE_RIGHT\r"){
@@ -58,16 +60,39 @@ void GameController::print_game_over(BlockFall &game){
     game.leaderboard.print_leaderboard();
 }
 
-void GameController::print_no_more_commands(BlockFall &game){}
-void GameController::print_no_more_blocks(BlockFall &game){}
-void GameController::print_leaderboard(BlockFall &game){}
+void GameController::print_no_more_commands(BlockFall &game){
+    cout << "GAME FINISHED!\n";
+    cout << "No more comands.\n";
+    cout << "Final grid and score:\n";
+    cout << endl;
+    print_grid_and_score(game);
+    cout << endl;
+    game.leaderboard.print_leaderboard();
+}
+
+void GameController::print_no_more_blocks(BlockFall &game){
+    cout << "YOU WIN!\n";
+    cout << "No more blocks.\n";
+    cout << "Final grid and score:\n";
+    cout << endl;
+    print_grid_and_score(game);
+    cout << endl;
+    game.leaderboard.print_leaderboard();
+}
+
 void GameController::swith_gravity(BlockFall &game){}
 void GameController::move_right(BlockFall &game){}
 void GameController::move_left(BlockFall &game){}
 void GameController::rotate_right(BlockFall &game){}
 void GameController::rotate_left(BlockFall &game){}
 void GameController::drop(BlockFall &game){}
+void GameController::spawn_block(BlockFall &game){
+    // if can spawn, spawn
 
+    // else game over
+    // check active rotation is correct
+    print_grid_and_score(game);
+ }
 
 int GameController::athHighScore(BlockFall &game){
     if(game.leaderboard.head_leaderboard_entry == nullptr){
@@ -88,7 +113,7 @@ void GameController::print_grid(BlockFall &game){
                 cout << unoccupiedCellChar;
             }
         }
-        cout << endl;
+        cout << "\n";
     }
 }
 
