@@ -3,7 +3,14 @@
 #include <iostream>
 #include <iomanip>
 
-
+// Destructor
+Leaderboard::~Leaderboard() {
+    while (head_leaderboard_entry != nullptr) {
+        LeaderboardEntry* temp = head_leaderboard_entry;
+        head_leaderboard_entry = head_leaderboard_entry->next_leaderboard_entry;
+        delete temp;
+    }
+}
 
 // Insert a new entry
 void Leaderboard::insert_new_entry(LeaderboardEntry* new_entry) {
@@ -78,28 +85,13 @@ void Leaderboard::read_from_file(const string& filename) {
 // Print the leaderboard
 void Leaderboard::print_leaderboard() {
     LeaderboardEntry* current = head_leaderboard_entry;
-    int rank = 0;
+    int rank = 1;
 
-    std::cout << "Leaderboard\n";
-    std::cout << "-----------\n";
-
+    std::cout << "Leaderboard\n-----------\n";
     while (current != nullptr) {
-        rank++;
-        std::cout << rank << ". "; //print rank
-        std::cout << current->player_name << " "; //print name
-        std::cout << current->score << " "; // print score
-        // prin time and flash buffer
+        std::cout << rank << ". " << current->player_name << " " << current->score << " ";
         std::cout << std::put_time(std::localtime(&current->last_played), "%H:%M:%S/%d.%m.%Y") << std::endl;
         current = current->next_leaderboard_entry;
-    }
-}
-
-// Destructor
-Leaderboard::~Leaderboard() {
-    LeaderboardEntry* current = head_leaderboard_entry;
-    while (current) {
-        LeaderboardEntry* next = current->next_leaderboard_entry;
-        delete current;
-        current = next;
+        rank++;
     }
 }

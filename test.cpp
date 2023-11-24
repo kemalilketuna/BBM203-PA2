@@ -23,7 +23,6 @@ int main() {
         {1, 1, 1},
     };
 
-
     Block *block1 = new Block();
     block1->set_shape(matrix1);
 
