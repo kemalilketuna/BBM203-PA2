@@ -7,11 +7,18 @@
 
 // Insert a new entry
 void Leaderboard::insert_new_entry(LeaderboardEntry* new_entry) {
-    if (!head_leaderboard_entry || new_entry->score > head_leaderboard_entry->score) {
+    // If no head, set new entry as head
+    if (head_leaderboard_entry == nullptr){
+        head_leaderboard_entry = new_entry;
+    }
+    // If the leaderboard is empty or the new entry has a higher score than the head 
+    else if (new_entry->score > head_leaderboard_entry->score) {
         new_entry->next_leaderboard_entry = head_leaderboard_entry;
         head_leaderboard_entry = new_entry;
-    } else {
+    }
+    else {
         LeaderboardEntry* current = head_leaderboard_entry;
+        // Find the position to insert the new entry
         while (current->next_leaderboard_entry && current->next_leaderboard_entry->score >= new_entry->score) {
             current = current->next_leaderboard_entry;
         }
@@ -20,58 +27,56 @@ void Leaderboard::insert_new_entry(LeaderboardEntry* new_entry) {
     }
 
     // Trimming the leaderboard
-    LeaderboardEntry* temp = head_leaderboard_entry;
+    LeaderboardEntry* current = head_leaderboard_entry;
     int count = 1;
-    while (temp && temp->next_leaderboard_entry && count < MAX_LEADERBOARD_SIZE) {
-        temp = temp->next_leaderboard_entry;
+    while (current->next_leaderboard_entry && count < MAX_LEADERBOARD_SIZE) {
         count++;
-    }
-
-    if (temp->next_leaderboard_entry) {
-        LeaderboardEntry* excess = temp->next_leaderboard_entry;
-        temp->next_leaderboard_entry = nullptr;
-        while (excess) {
-            LeaderboardEntry* next = excess->next_leaderboard_entry;
-            delete excess;
-            excess = next;
+        current = current->next_leaderboard_entry;
+        if (count == MAX_LEADERBOARD_SIZE) {
+            LeaderboardEntry * temp = current->next_leaderboard_entry;
+            current->next_leaderboard_entry = nullptr;
+            while (temp) {
+                LeaderboardEntry * next = temp->next_leaderboard_entry;
+                delete temp;
+                temp = next;
+            }
+            break;
         }
     }
 }
 
-// Write to file
 void Leaderboard::write_to_file(const string& filename) {
     std::ofstream file(filename);
-    if (!file.is_open()) {
-        std::cerr << "Failed to open file for writing: " << filename << std::endl;
-        return;
-    }
+    // if (!file.is_open()) {
+    //     throw std::runtime_error(filename + " could not be opened for writing.");
+    // }
 
     LeaderboardEntry* current = head_leaderboard_entry;
     while (current != nullptr) {
-        file << current->score << " " << current->last_played << " " << current->player_name << "\n";
+        // Write to file
+        file << current->score << " " << current->last_played << " " << current->player_name << endl;
         current = current->next_leaderboard_entry;
     }
 
     file.close();
 }
 
-// Read from file
+
 void Leaderboard::read_from_file(const string& filename) {
     std::ifstream file(filename);
-    if (!file.is_open()) {
-        std::cerr << "Failed to open file for reading: " << filename << std::endl;
-        return;
-    }
+    // if (!file.is_open()) {
+    //    throw std::runtime_error(filename + " could not be opened for reading.");
+    // }
 
     unsigned long score;
     time_t lastPlayed;
     string playerName;
-
+    
+    // Read from file
     while (file >> score >> lastPlayed >> playerName) {
         LeaderboardEntry* newEntry = new LeaderboardEntry(score, lastPlayed, playerName);
         insert_new_entry(newEntry);
     }
-
     file.close();
 }
 
