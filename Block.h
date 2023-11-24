@@ -13,6 +13,14 @@ public:
     Block * left_rotation = nullptr; // Pointer to the block's counter-clockwise neighbor block (its left rotation)
     Block * next_block = nullptr; // Pointer to the next block to appear in the game
 
+    int height() {
+        return this->shape.size();
+    }
+
+    int width() {
+        return this->shape.at(0).size();
+    }
+
     bool operator==(const Block& other) const {
         if (this->shape == other.shape) {
             return true;
