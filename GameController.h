@@ -12,6 +12,17 @@ private:
     int current_score = 0;
     int athHighScore(BlockFall &game);
     void print_grid(BlockFall &game);
+    void print_grid_and_score(BlockFall &game);
+    void print_game_over(BlockFall &game);
+    void print_no_more_commands(BlockFall &game);
+    void print_no_more_blocks(BlockFall &game);
+    void print_leaderboard(BlockFall &game);
+    void swith_gravity(BlockFall &game);
+    void move_right(BlockFall &game);
+    void move_left(BlockFall &game);
+    void rotate_right(BlockFall &game);
+    void rotate_left(BlockFall &game);
+    void drop(BlockFall &game);
 };
 
 
