@@ -116,7 +116,11 @@ void GameController::move_right(BlockFall &game){}
 void GameController::move_left(BlockFall &game){}
 void GameController::rotate_right(BlockFall &game){}
 void GameController::rotate_left(BlockFall &game){}
-void GameController::drop(BlockFall &game){}
+void GameController::drop(BlockFall &game){
+
+    // update score
+}
+
 void GameController::spawn_block(BlockFall &game){
     // if can spawn, spawn
 
@@ -132,6 +136,23 @@ void GameController::clear_rows(BlockFall &game){
             game.grid.erase(game.grid.begin() + i);
             game.grid.insert(game.grid.begin(), vector<int>(game.cols, 0));
             // update score
+        }
+    }
+}
+
+// !!!!!! CHECK THIS FUNCTION !!!!!!
+void GameController::check_powerup(BlockFall &game){
+    // check if powerup is activated
+    if (std::all_of(game.power_up.begin(), game.power_up.end(), [](vector<bool> i) { return std::all_of(i.begin(), i.end(), [](bool j) { return j == 1; }); })) {
+        // increase score
+        int cell = 0;
+        for (int row = 0; row < game.rows; row++) { // for each
+            cell += std::count(game.grid[row].begin(), game.grid[row].end(), 1);
+        }
+        game.current_score += cell + 1000;
+        // clear grid
+        for (int row = 0; row < game.rows; row++) { // for each
+            game.grid[row].clear();
         }
     }
 }
