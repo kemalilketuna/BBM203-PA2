@@ -83,7 +83,7 @@ void GameController::print_no_more_blocks(BlockFall &game){
 
 void GameController::swith_gravity(BlockFall &game){
     // calculate a row how many ones
-    int[game.cols] ones;
+    int ones[game.cols];
     for (int row = 0; row < game.rows; row++) { // for each
         for (int col = 0; col < game.cols; col++) {
             if (game.grid[row][col] == 1) {
@@ -93,7 +93,7 @@ void GameController::swith_gravity(BlockFall &game){
     }
 
     // fill grid with ones bottom up
-    for (int row = game - 1; row >= 0; row--) { // for each
+    for (int row = game.rows - 1; row >= 0; row--) { // for each
         for (int col = 0; col < game.cols; col++) {
             if (ones[col] > 0) {
                 game.grid[row][col] = 1;
@@ -108,7 +108,7 @@ void GameController::swith_gravity(BlockFall &game){
     clear_rows(game);
 
     // switch gravity
-    game.gravity = !game.gravity;
+    game.gravity_mode_on = !game.gravity_mode_on;
 }
 
 

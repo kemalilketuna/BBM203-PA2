@@ -24,6 +24,7 @@ private:
     void drop(BlockFall &game);
     void spawn_block(BlockFall &game);
     void clear_rows(BlockFall &game);
+    int block_abscissa = 0;
 };
 
 
