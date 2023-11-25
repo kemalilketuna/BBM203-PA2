@@ -145,10 +145,37 @@ void GameController::move_left(BlockFall &game){
 }
 
 void GameController::rotate_right(BlockFall &game){
-    
+    vector<vector<bool>> shape = game.active_rotation->right_rotation->shape;
+    int height = game.active_rotation->right_rotation->height();
+    int width = game.active_rotation->right_rotation->width();
+    for (int row = 0; row < height; row++) { // for each
+        for (int col = 0; col < width; col++) {
+            if (shape[row][col] == 1) {
+                if (game.grid[row][col + block_abscissa] == 1) {
+                    return;
+                }
+            }
+        }
+    }
+    game.active_rotation = game.active_rotation->right_rotation;
 }
 
-void GameController::rotate_left(BlockFall &game){}
+void GameController::rotate_left(BlockFall &game){
+    vector<vector<bool>> shape = game.active_rotation->left_rotation->shape;
+    int height = game.active_rotation->left_rotation->height();
+    int width = game.active_rotation->left_rotation->width();
+    for (int row = 0; row < height; row++) { // for each
+        for (int col = 0; col < width; col++) {
+            if (shape[row][col] == 1) {
+                if (game.grid[row][col + block_abscissa] == 1) {
+                    return;
+                }
+            }
+        }
+    }
+    game.active_rotation = game.active_rotation->left_rotation;
+}
+
 void GameController::drop(BlockFall &game){
 
     // update score
