@@ -23,19 +23,19 @@ bool GameController::play(BlockFall& game, const string& commands_file){
         }
         //ROTATE_RIGHT
         else if(line == "ROTATE_RIGHT\r"){
-            //do something
+            rotate_right(game);
         }
         //ROTATE_LEFT
         else if(line == "ROTATE_LEFT\r"){
-            //do something
+            rotate_left(game);
         }
         //MOVE_RIGHT
         else if(line == "MOVE_RIGHT\r"){
-            //do something
+            move_right(game);
         }
         //MOVE_LEFT
         else if(line == "MOVE_LEFT\r"){
-            //do something
+            move_left(game);
         }
         //GRAVITY_SWITCH
         else if(line == "GRAVITY_SWITCH\r"){
@@ -43,12 +43,15 @@ bool GameController::play(BlockFall& game, const string& commands_file){
         }
         //DROP
         else if(line == "DROP\r"){
-            //do something
+            drop(game);
         }
         //REMOVE IT LATER
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
     }
 
+    print_no_more_commands(game);
+    cout << endl;
+    cout << endl;
     return false;
 }
 
@@ -177,14 +180,93 @@ void GameController::rotate_left(BlockFall &game){
 }
 
 void GameController::drop(BlockFall &game){
+    // int height = game.active_rotation->height();
+    // int width = game.active_rotation->width();
+    
+    // if(!game.gravity_mode_on){
+    //     // move block down until it can't move down anymore
+    //     int bottom_limit[width];
+        
+    //     for (int col = 0; col < width; col++){
+    //         for (int row = 0; row < game.rows; row++){
+    //             if (game.active_rotation->shape[row][col+block_abscissa] == 1){
+    //                 if(bottom_limit[col] == 0){
+    //                     bottom_limit[col] = row;
+    //                 }
+    //             }
+    //         }
+    //     }
 
-    // update score
+    //     int up_limit[width];
+    //     for (int col = 0; col < width; col++){
+    //         for (int row = height - 1; row >= 0; row--){
+    //             if (game.active_rotation->shape[row][col+block_abscissa] == 1){
+    //                 if(up_limit[col] == 0){
+    //                     up_limit[col] = row;
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     int shift = 0;
+    //     for (int col = 0; col < width; col++){
+    //         if (bottom_limit[col] - up_limit[col] < shift){
+    //             shift = bottom_limit[col] - up_limit[col];
+    //         }
+    //     }
+
+    //     for (int row = 0; row < height; row++) { // for each
+    //         for (int col = 0; col < width; col++) {
+    //             if (game.active_rotation->shape[row][col] == 1) {
+    //                 game.grid[row + shift][col + block_abscissa] = 1;
+    //             }
+    //         }
+    //     }
+
+    //     current_score += shift * game.active_rotation->ocuppied_cells();
+    // }else{
+    //     // gravity mode on
+    //     int bottom_limit[width];
+    //     for (int col = 0; col < width; col++){
+    //         for (int row = 0; row < game.rows; row++){
+    //             if (game.active_rotation->shape[row][col+block_abscissa] == 1){
+    //                 if(bottom_limit[col] == 0){
+    //                     bottom_limit[col] = row;
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     for (int row = height - 1; row >= 0; row--){
+    //         for (int col = 0; col < width; col++){
+    //             if (game.active_rotation->shape[row][col] == 1){
+    //                 current_score += bottom_limit[col] - row;
+    //                 bottom_limit[col] -= 1;
+    //                 game.grid[bottom_limit[col]-1][col + block_abscissa] = 1; 
+    //             }
+    //         } 
+    //     }
+    // }
+
+    // // check if powerup is activated
+    // check_powerup(game);
+
+    // // clear any filled rows
+    // clear_rows(game);
+
+    // // spawn new block
+    // spawn_manager(game);
 }
 
 bool GameController::spawn_manager(BlockFall &game){
     if (game.active_rotation == nullptr) {
         print_no_more_blocks(game);
         return false;
+    }
+
+    block_abscissa = 0;
+    if (game.current_score > 0){
+        game.active_rotation = game.active_rotation->next_block;
     }
 
     // if can spawn, spawn
@@ -198,8 +280,6 @@ bool GameController::spawn_manager(BlockFall &game){
             }
         }
     }
-    block_abscissa = 0;
-    game.active_rotation = game.active_rotation->next_block;
     return true;
 }
 
