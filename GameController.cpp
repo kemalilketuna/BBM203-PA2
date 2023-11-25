@@ -129,8 +129,25 @@ void GameController::move_right(BlockFall &game){
     }
 }
 
-void GameController::move_left(BlockFall &game){}
-void GameController::rotate_right(BlockFall &game){}
+void GameController::move_left(BlockFall &game){
+    if (block_abscissa > 0) {
+        for (int row = 0; row < game.active_rotation->height(); row++) { // for each
+            for (int col = 0; col < game.active_rotation->width(); col++) {
+                if (game.active_rotation->shape[row][col] == 1) {
+                    if (game.grid[row][col - 1] == 1) {
+                        return;
+                    }
+                }
+            }
+        }
+        block_abscissa -= 1;
+    }
+}
+
+void GameController::rotate_right(BlockFall &game){
+    
+}
+
 void GameController::rotate_left(BlockFall &game){}
 void GameController::drop(BlockFall &game){
 
