@@ -28,6 +28,18 @@ public:
         return this->shape.at(0).size();
     }
 
+    int ocuppied_cells() {
+        int count = 0;
+        for (int i = 0; i < this->height(); i++) {
+            for (int j = 0; j < this->width(); j++) {
+                if (this->shape[i][j]) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+    
     bool operator==(const Block& other) const {
         if (this->shape == other.shape) {
             return true;

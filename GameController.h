@@ -22,9 +22,10 @@ private:
     void rotate_right(BlockFall &game);
     void rotate_left(BlockFall &game);
     void drop(BlockFall &game);
-    void spawn_block(BlockFall &game);
+    bool spawn_manager(BlockFall &game);
     void clear_rows(BlockFall &game);
     void check_powerup(BlockFall &game);
+    void print_before_clear(BlockFall &game);
     int block_abscissa = 0;
 };
 
