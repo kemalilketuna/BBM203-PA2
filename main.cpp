@@ -3,12 +3,12 @@
 #include <iostream>
 
 int main(int argc, char **argv) {
-    char * first = "samples/1_big_grid_gravity_switch/grid.dat";
-    char * second = "samples/1_big_grid_gravity_switch/blocks.dat";
-    char * third = "samples/1_big_grid_gravity_switch/commands.dat";
-    char * fourth = "GRAVITY_OFF";
-    char * fifth = "samples/leaderboard.txt";
-    char * sixth = "InfiniteLooper";
+    string first = "samples/1_big_grid_gravity_switch/grid.dat";
+    string second = "samples/1_big_grid_gravity_switch/blocks.dat";
+    string third = "samples/1_big_grid_gravity_switch/commands.dat";
+    string fourth = "GRAVITY_OFF";
+    string fifth = "samples/leaderboard.txt";
+    string sixth = "InfiniteLooper";
 
     BlockFall game(first, second, false, fifth, sixth);
     GameController controller;
