@@ -76,7 +76,16 @@ void GameController::print_game_over(BlockFall &game){
     cout << endl;
     cout << "Final grid and score:" << endl;
     cout << endl;
-    print_grid_and_score(game);
+    for (int row = 0; row < game.rows; row++) { // for each
+        for (int col = 0; col < game.cols; col++) {
+            if (game.grid[row][col] == 1) {
+                cout << occupiedCellChar;
+            } else {
+                cout << unoccupiedCellChar;
+            }
+        }
+        cout << endl;
+    }
     cout << endl;
     game.leaderboard.print_leaderboard();
 }
@@ -192,75 +201,68 @@ void GameController::rotate_left(BlockFall &game){
 }
 
 void GameController::drop(BlockFall &game){
-    // int height = game.active_rotation->height();
-    // int width = game.active_rotation->width();
+    Block * block = game.active_rotation;
+    int block_height = block->height();
+    int block_width = block->width();
     
-    // if(!game.gravity_mode_on){
-    //     // move block down until it can't move down anymore
-    //     int bottom_limit[width];
+    if(!game.gravity_mode_on){
+        // move block down until it can't move down anymore
+
+        /*
+        // find upper limit of grid
+        int grid_limit[block_width];
         
-    //     for (int col = 0; col < width; col++){
-    //         for (int row = 0; row < game.rows; row++){
-    //             if (game.active_rotation->shape[row][col+block_abscissa] == 1){
-    //                 if(bottom_limit[col] == 0){
-    //                     bottom_limit[col] = row;
-    //                 }
-    //             }
-    //         }
-    //     }
+        for(int row = 0; row < game.rows; row++){
+            for(int col = block_abscissa; col < block_abscissa + block_width; col++){
+                if(game.grid[row][col] == 1){
+                    grid_limit[col-block_abscissa] = row;
+                    break;
+                }
+            }
+        }
+        */
 
-    //     int up_limit[width];
-    //     for (int col = 0; col < width; col++){
-    //         for (int row = height - 1; row >= 0; row--){
-    //             if (game.active_rotation->shape[row][col+block_abscissa] == 1){
-    //                 if(up_limit[col] == 0){
-    //                     up_limit[col] = row;
-    //                 }
-    //             }
-    //         }
-    //     }
+        // find bottom limit of block
+        int block_limit[block_width];
+        
+        for(int row = block_height - 1; row >= 0; row--){
+            for(int col = 0; col < block_width; col++){
+                if(block->shape[row][col] == 1){
+                    block_limit[col] = row;
+                    break;
+                }
+            }
+        }
 
-    //     int shift = 0;
-    //     for (int col = 0; col < width; col++){
-    //         if (bottom_limit[col] - up_limit[col] < shift){
-    //             shift = bottom_limit[col] - up_limit[col];
-    //         }
-    //     }
+        for(int i = 0; i < block_width; i++){
+            cout << block_limit[i] << endl;
+        }
 
-    //     for (int row = 0; row < height; row++) { // for each
-    //         for (int col = 0; col < width; col++) {
-    //             if (game.active_rotation->shape[row][col] == 1) {
-    //                 game.grid[row + shift][col + block_abscissa] = 1;
-    //             }
-    //         }
-    //     }
+    }else{
+        /*
+        // gravity mode on
+        int bottom_limit[width];
+        for (int col = 0; col < width; col++){
+            for (int row = 0; row < game.rows; row++){
+                if (game.active_rotation->shape[row][col+block_abscissa] == 1){
+                    if(bottom_limit[col] == 0){
+                        bottom_limit[col] = row;
+                    }
+                }
+            }
+        }
 
-    //     current_score += shift * game.active_rotation->ocuppied_cells();
-    // }else{
-    //     // gravity mode on
-    //     int bottom_limit[width];
-    //     for (int col = 0; col < width; col++){
-    //         for (int row = 0; row < game.rows; row++){
-    //             if (game.active_rotation->shape[row][col+block_abscissa] == 1){
-    //                 if(bottom_limit[col] == 0){
-    //                     bottom_limit[col] = row;
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     for (int row = height - 1; row >= 0; row--){
-    //         for (int col = 0; col < width; col++){
-    //             if (game.active_rotation->shape[row][col] == 1){
-    //                 current_score += bottom_limit[col] - row;
-    //                 bottom_limit[col] -= 1;
-    //                 game.grid[bottom_limit[col]-1][col + block_abscissa] = 1; 
-    //             }
-    //         } 
-    //     }
-    // }
-
-    
+        for (int row = height - 1; row >= 0; row--){
+            for (int col = 0; col < width; col++){
+                if (game.active_rotation->shape[row][col] == 1){
+                    current_score += bottom_limit[col] - row;
+                    bottom_limit[col] -= 1;
+                    game.grid[bottom_limit[col]-1][col + block_abscissa] = 1; 
+                }
+            } 
+        }
+        */
+    }
 }
 
 bool GameController::spawn_manager(BlockFall &game){
