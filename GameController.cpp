@@ -7,19 +7,12 @@ bool GameController::play(BlockFall& game, const string& commands_file){
     ifstream file(commands_file);
     std::string line;
 
-    //remove it later
-    int count = 0;
-
     if (spawn_manager(game) == false) {
         return false;
     }
 
     while (getline(file, line))
-    {  
-        //remove it later
-        count++;
-        cout << "Command " << count << ": " << line << endl;
-
+    {
         //PRINT_GRID
         if(line == "PRINT_GRID\r"){
             print_command(game);
@@ -44,7 +37,7 @@ bool GameController::play(BlockFall& game, const string& commands_file){
         }
         //GRAVITY_SWITCH
         else if(line == "GRAVITY_SWITCH\r"){
-            swith_gravity(game);
+            switch_gravity(game);
             
             // check if powerup is activated
             check_powerup(game);
@@ -108,7 +101,7 @@ void GameController::print_no_more_blocks(BlockFall &game){
     game.leaderboard.print_leaderboard();
 }
 
-void GameController::swith_gravity(BlockFall &game){
+void GameController::switch_gravity(BlockFall &game){
     // calculate a row how many ones
     int ones[game.cols] = {0};
     for (int row = 0; row < game.rows; row++) { // for each
@@ -203,73 +196,69 @@ void GameController::drop(BlockFall &game){
     int block_height = block->height();
     int block_width = block->width();
     
-    if(!game.gravity_mode_on){
-        // move block down until it can't move down anymore
-
-        
-        // find upper limit of grid
-        int grid_limit[block_width] = {0};
     
-        for(int col = 0; col < block_width; col++){
-            grid_limit[col] = game.rows;
-            for (int row = 0; row < game.rows; row++){
-                if (game.grid[row][col+block_abscissa] == 1){
-                    grid_limit[col] = row;
-                    break;
-                }
-            }
-        }
+    // find upper limit of grid
+    int grid_limit[block_width] = {0};
 
-        // find bottom limit of block
-        int block_limit[block_width] = {0};
-        
-        for(int col = 0; col < block_width; col++){
-            for(int row = block_height - 1; row >= 0; row--){
-                if(block->shape[row][col] == 1){
-                    block_limit[col] = row;
-                    break;
-                }
+    for(int col = 0; col < block_width; col++){
+        grid_limit[col] = game.rows;
+        for (int row = 0; row < game.rows; row++){
+            if (game.grid[row][col+block_abscissa] == 1){
+                grid_limit[col] = row;
+                break;
             }
         }
-        
-        int shift = 0;
-        if (block_height > 0 && block_width > 0){
-            shift = grid_limit[0] - block_limit[0] - 1;
-        }
-        
-        // find the smallest shift
-        for(int i = 1; i < block_width; i++){
-            int temp = grid_limit[i] - block_limit[i] - 1;
-            if(temp < shift){
-                shift = temp;
-            }
-        }
+    }
 
-        // move block down by shift
+    // find bottom limit of block
+    int block_limit[block_width] = {0};
+    
+    for(int col = 0; col < block_width; col++){
         for(int row = block_height - 1; row >= 0; row--){
-            for(int col = 0; col < block_width; col++){
-                if(block->shape[row][col] == 1){
+            if(block->shape[row][col] == 1){
+                block_limit[col] = row;
+                break;
+            }
+        }
+    }
+    
+    int shift = 0;
+    if (block_height > 0 && block_width > 0){
+        shift = grid_limit[0] - block_limit[0] - 1;
+    }
+    
+    // find the smallest shift
+    for(int i = 1; i < block_width; i++){
+        int temp = grid_limit[i] - block_limit[i] - 1;
+        if(temp < shift){
+            shift = temp;
+        }
+    }
+
+    // move block down by shift
+    for(int row = block_height - 1; row >= 0; row--){
+        for(int col = 0; col < block_width; col++){
+            if(block->shape[row][col] == 1){
+                if(!game.gravity_mode_on){
                     game.grid[row + shift][col + block_abscissa] = 1;
                 }
             }
         }
-        game.current_score += shift * block->ocuppied_cell_count();
+    }
+    game.current_score += shift * block->ocuppied_cell_count();
 
-    }else{
-        // gravity mode on
-
+    if(game.gravity_mode_on){
         int grid_limit[block_width] = {0};
         for (int col = 0; col < block_width; col++){
             grid_limit[col] = game.rows;
-
+        
             for (int row = 0; row < game.rows; row++){
                 if (game.grid[row][col+block_abscissa] == 1){
                     grid_limit[col] = row;
                     break;
                 }
-            }
+            } 
         }
-
         for (int row = block_height - 1; row >= 0; row--){
             for (int col = 0; col < block_width; col++){
                 if (game.active_rotation->shape[row][col] == 1){
@@ -281,6 +270,7 @@ void GameController::drop(BlockFall &game){
         }
     }
 }
+
 
 bool GameController::spawn_manager(BlockFall &game){
     if (game.active_rotation == nullptr) {
@@ -312,40 +302,40 @@ bool GameController::spawn_manager(BlockFall &game){
 }
 
 void GameController::clear_rows(BlockFall &game){
-    bool shouldClear = false;
+    bool shouldPrint = true;
     int rowCount = game.rows;
     for (int i = 0; i < rowCount; i++) {
         if (std::all_of(game.grid[i].begin(), game.grid[i].end(), [](int i) { return i == 1; })) {
-            print_before_clear(game);
-            shouldClear = true;
-            break;
-        }
-    }
-    if(shouldClear) {
-        for (int i = 0; i < rowCount; i++) {
+            if(shouldPrint) {
+                print_before_clear(game);
+                shouldPrint = false;
+            }
             game.grid.erase(game.grid.begin() + i);
             game.grid.insert(game.grid.begin(), vector<int>(game.cols, 0));
             game.current_score += game.cols; // increase score by number of columns
         }
     }
+
 }
 
 // !!!!!! CHECK THIS FUNCTION !!!!!!
 void GameController::check_powerup(BlockFall &game){
-    // check if powerup is activated
-    if (std::all_of(game.power_up.begin(), game.power_up.end(), [](vector<bool> i) { return std::all_of(i.begin(), i.end(), [](bool j) { return j == 1; }); })) {
-        print_before_clear(game);
-        // increase score
-        int cell = 0;
-        for (int row = 0; row < game.rows; row++) { // for each
-            cell += std::count(game.grid[row].begin(), game.grid[row].end(), 1);
-        }
-        game.current_score += cell + 1000;
-        // clear grid
-        for (int row = 0; row < game.rows; row++) { // for each
-            game.grid[row].clear();
-        }
-    }
+    // // check if powerup is activated
+    // if (std::all_of(game.power_up.begin(), game.power_up.end(), [](vector<bool> i) { return std::all_of(i.begin(), i.end(), [](bool j) { return j == 1; }); })) {
+        
+        
+    //     print_before_clear(game);
+    //     // increase score
+    //     int cell = 0;
+    //     for (int row = 0; row < game.rows; row++) { // for each
+    //         cell += std::count(game.grid[row].begin(), game.grid[row].end(), 1);
+    //     }
+    //     game.current_score += cell + 1000;
+    //     // clear grid
+    //     for (int row = 0; row < game.rows; row++) { // for each
+    //         game.grid[row].clear();
+    //     }
+    // }
 }
 
 int GameController::athHighScore(BlockFall &game){
@@ -378,7 +368,7 @@ void GameController::print_grid(BlockFall &game){
 }
 
 void GameController::print_before_clear(BlockFall &game){
-    cout << "Before clear:\n";
+    cout << "Before clearing:\n";
     int height = game.active_rotation->height();
     int width = game.active_rotation->width();
     for (int row = 0; row < game.rows; row++) { // for each

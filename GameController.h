@@ -15,7 +15,7 @@ private:
     void print_game_over(BlockFall &game);
     void print_no_more_commands(BlockFall &game);
     void print_no_more_blocks(BlockFall &game);
-    void swith_gravity(BlockFall &game);
+    void switch_gravity(BlockFall &game);
     void print_command(BlockFall &game);
     void move_right(BlockFall &game);
     void move_left(BlockFall &game);
