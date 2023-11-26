@@ -15,7 +15,7 @@ bool GameController::play(BlockFall& game, const string& commands_file){
     {  
         //PRINT_GRID
         if(line == "PRINT_GRID\r"){
-            print_grid_and_score(game);
+            print_command(game);
             cout << endl;
             cout << endl;
         }
@@ -95,7 +95,7 @@ void GameController::print_no_more_commands(BlockFall &game){
     cout << "No more comands.\n";
     cout << "Final grid and score:\n";
     cout << endl;
-    print_grid_and_score(game);
+    print_grid(game);
     cout << endl;
     game.leaderboard.print_leaderboard();
 }
@@ -105,7 +105,7 @@ void GameController::print_no_more_blocks(BlockFall &game){
     cout << "No more blocks.\n";
     cout << "Final grid and score:\n";
     cout << endl;
-    print_grid_and_score(game);
+    print_grid(game);
     cout << endl;
     game.leaderboard.print_leaderboard();
 }
@@ -256,6 +256,8 @@ void GameController::drop(BlockFall &game){
             }
         }
 
+        game.current_score += shift * block->ocuppied_cell_count();
+
     }else{
         /*
         // gravity mode on
@@ -359,7 +361,7 @@ int GameController::athHighScore(BlockFall &game){
     }
 }
 
-void GameController::print_grid(BlockFall &game){
+void GameController::print_grid_and_block(BlockFall &game){
     int height = game.active_rotation->height();
     int width = game.active_rotation->width();
     vector<vector<bool>> shape = game.active_rotation->shape;
@@ -384,16 +386,31 @@ void GameController::print_grid(BlockFall &game){
     }
 }
 
+void GameController::print_grid(BlockFall &game){
+    int height = game.active_rotation->height();
+    int width = game.active_rotation->width();
+    for (int row = 0; row < game.rows; row++) { // for each
+        for (int col = 0; col < game.cols; col++) {
+            if (game.grid[row][col] == 1) {
+                cout << occupiedCellChar;
+            } else {
+                cout << unoccupiedCellChar;
+            }
+        }
+        cout << endl;
+    }
+}
+
 void GameController::print_before_clear(BlockFall &game){
     cout << "Before clear:\n";
     print_grid(game);
     cout << endl;
 }
 
-void GameController::print_grid_and_score(BlockFall &game){
+void GameController::print_command(BlockFall &game){
     cout << "Score: " << this->current_score << endl;
     cout << "High Score: " << athHighScore(game) << endl;
-    print_grid(game);
+    print_grid_and_block(game);
 }
 
 
