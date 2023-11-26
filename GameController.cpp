@@ -208,34 +208,52 @@ void GameController::drop(BlockFall &game){
     if(!game.gravity_mode_on){
         // move block down until it can't move down anymore
 
-        /*
-        // find upper limit of grid
-        int grid_limit[block_width];
         
-        for(int row = 0; row < game.rows; row++){
-            for(int col = block_abscissa; col < block_abscissa + block_width; col++){
-                if(game.grid[row][col] == 1){
-                    grid_limit[col-block_abscissa] = row;
+        // find upper limit of grid
+        int grid_limit[block_width] = {0};
+        
+        for(int col = 0; col < block_width; col++){
+            for (int row = 0; row < game.rows; row++){
+                if (game.grid[row][col+block_abscissa] == 1){
+                    grid_limit[col] = row;
                     break;
                 }
+                grid_limit[col] = game.rows;
             }
         }
-        */
 
         // find bottom limit of block
-        int block_limit[block_width];
+        int block_limit[block_width] = {0};
         
-        for(int row = block_height - 1; row >= 0; row--){
-            for(int col = 0; col < block_width; col++){
+        for(int col = 0; col < block_width; col++){
+            for(int row = block_height - 1; row >= 0; row--){
                 if(block->shape[row][col] == 1){
                     block_limit[col] = row;
                     break;
                 }
             }
         }
+        
+        int shift = 0;
+        if (block_height > 0 && block_width > 0){
+            shift = grid_limit[0] - block_limit[0] - 1;
+        }
+        
+        // find the smallest shift
+        for(int i = 1; i < block_width; i++){
+            int temp = grid_limit[i] - block_limit[i] - 1;
+            if(temp < shift){
+                shift = temp;
+            }
+        }
 
-        for(int i = 0; i < block_width; i++){
-            cout << block_limit[i] << endl;
+        // move block down by shift
+        for(int row = block_height - 1; row >= 0; row--){
+            for(int col = 0; col < block_width; col++){
+                if(block->shape[row][col] == 1){
+                    game.grid[row + shift][col + block_abscissa] = 1;
+                }
+            }
         }
 
     }else{
