@@ -110,7 +110,7 @@ void GameController::print_no_more_blocks(BlockFall &game){
 
 void GameController::swith_gravity(BlockFall &game){
     // calculate a row how many ones
-    int ones[game.cols];
+    int ones[game.cols] = {0};
     for (int row = 0; row < game.rows; row++) { // for each
         for (int col = 0; col < game.cols; col++) {
             if (game.grid[row][col] == 1) {
@@ -258,7 +258,25 @@ void GameController::drop(BlockFall &game){
     }else{
         // gravity mode on
         
-       
+        int bottom_limit[block_width] = {0};
+        for (int col = 0; col < block_width; col++){
+            for (int row = 0; row < game.rows; row++){
+                if (game.active_rotation->shape[row][col+block_abscissa] == 1){
+                    if(bottom_limit[col] == 0){
+                        bottom_limit[col] = row;
+                    }
+                }
+            }
+        }
+        for (int row = block_height - 1; row >= 0; row--){
+            for (int col = 0; col < block_width; col++){
+                if (game.active_rotation->shape[row][col] == 1){
+                    current_score += bottom_limit[col] - row;
+                    bottom_limit[col] -= 1;
+                    game.grid[bottom_limit[col]-1][col + block_abscissa] = 1; 
+                }
+            } 
+        }
     }
 }
 
