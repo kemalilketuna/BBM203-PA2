@@ -3,14 +3,17 @@
 #include <fstream>
 #include <algorithm>
 
+void GameController::record_score(BlockFall& game){
+    LeaderboardEntry * entry = new LeaderboardEntry(game.current_score, 1699350720, game.player_name);
+    game.leaderboard.insert_new_entry(entry);
+    game.leaderboard.write_to_file(game.leaderboard_file_name);
+}
+
 bool GameController::play(BlockFall& game, const string& commands_file){
     ifstream file(commands_file);
     std::string line;
 
     if (spawn_manager(game) == false) {
-        LeaderboardEntry * entry = new LeaderboardEntry(game.current_score, 1699282137, game.player_name);
-        game.leaderboard.insert_new_entry(entry);
-        game.leaderboard.write_to_file(game.leaderboard_file_name);
         return false;
     }
 
@@ -60,10 +63,6 @@ bool GameController::play(BlockFall& game, const string& commands_file){
 
             // spawn new block
             if (spawn_manager(game) == false) {
-                // score, time now, string name
-                LeaderboardEntry * entry = new LeaderboardEntry(game.current_score, 1699282137, game.player_name);
-                game.leaderboard.insert_new_entry(entry);
-                game.leaderboard.write_to_file(game.leaderboard_file_name);
                 return false;
             }
         }
@@ -71,9 +70,7 @@ bool GameController::play(BlockFall& game, const string& commands_file){
     }
 
 
-    LeaderboardEntry * entry = new LeaderboardEntry(game.current_score, 1699282137, game.player_name);
-    game.leaderboard.insert_new_entry(entry);
-    game.leaderboard.write_to_file(game.leaderboard_file_name);
+    record_score(game);
     print_no_more_commands(game);
     cout << endl;
     cout << endl;
@@ -285,9 +282,7 @@ void GameController::drop(BlockFall &game){
 
 bool GameController::spawn_manager(BlockFall &game){
     if (game.active_rotation == nullptr) {
-        LeaderboardEntry * entry = new LeaderboardEntry(game.current_score, 1699282137, game.player_name);
-        game.leaderboard.insert_new_entry(entry);
-        game.leaderboard.write_to_file(game.leaderboard_file_name);
+        record_score(game);
         print_no_more_blocks(game);
         return false;
     }
@@ -296,9 +291,7 @@ bool GameController::spawn_manager(BlockFall &game){
     if (game.current_score > 0){
         game.active_rotation = game.active_rotation->next_block;
         if (game.active_rotation == nullptr) {
-            LeaderboardEntry * entry = new LeaderboardEntry(game.current_score, 1699282137, game.player_name);
-            game.leaderboard.insert_new_entry(entry);
-            game.leaderboard.write_to_file(game.leaderboard_file_name);
+            record_score(game);
             print_no_more_blocks(game);
             return false;
         }
@@ -309,9 +302,7 @@ bool GameController::spawn_manager(BlockFall &game){
         for (int col = 0; col < game.active_rotation->width(); col++) {
             if (game.active_rotation->shape[row][col] == 1) {
                 if (game.grid[row][col] == 1) {
-                    LeaderboardEntry * entry = new LeaderboardEntry(game.current_score, 1699282137, game.player_name);
-                    game.leaderboard.insert_new_entry(entry);
-                    game.leaderboard.write_to_file(game.leaderboard_file_name);
+                    record_score(game);
                     print_game_over(game);
                     return false;
                 }
