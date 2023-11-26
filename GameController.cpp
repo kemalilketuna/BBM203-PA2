@@ -70,12 +70,13 @@ bool GameController::play(BlockFall& game, const string& commands_file){
        
     }
 
-    print_no_more_commands(game);
-    cout << endl;
-    cout << endl;
+
     LeaderboardEntry * entry = new LeaderboardEntry(game.current_score, 1699282137, game.player_name);
     game.leaderboard.insert_new_entry(entry);
     game.leaderboard.write_to_file(game.leaderboard_file_name);
+    print_no_more_commands(game);
+    cout << endl;
+    cout << endl;
     return false;
 }
 
@@ -284,6 +285,9 @@ void GameController::drop(BlockFall &game){
 
 bool GameController::spawn_manager(BlockFall &game){
     if (game.active_rotation == nullptr) {
+        LeaderboardEntry * entry = new LeaderboardEntry(game.current_score, 1699282137, game.player_name);
+        game.leaderboard.insert_new_entry(entry);
+        game.leaderboard.write_to_file(game.leaderboard_file_name);
         print_no_more_blocks(game);
         return false;
     }
@@ -292,6 +296,9 @@ bool GameController::spawn_manager(BlockFall &game){
     if (game.current_score > 0){
         game.active_rotation = game.active_rotation->next_block;
         if (game.active_rotation == nullptr) {
+            LeaderboardEntry * entry = new LeaderboardEntry(game.current_score, 1699282137, game.player_name);
+            game.leaderboard.insert_new_entry(entry);
+            game.leaderboard.write_to_file(game.leaderboard_file_name);
             print_no_more_blocks(game);
             return false;
         }
@@ -302,6 +309,9 @@ bool GameController::spawn_manager(BlockFall &game){
         for (int col = 0; col < game.active_rotation->width(); col++) {
             if (game.active_rotation->shape[row][col] == 1) {
                 if (game.grid[row][col] == 1) {
+                    LeaderboardEntry * entry = new LeaderboardEntry(game.current_score, 1699282137, game.player_name);
+                    game.leaderboard.insert_new_entry(entry);
+                    game.leaderboard.write_to_file(game.leaderboard_file_name);
                     print_game_over(game);
                     return false;
                 }
