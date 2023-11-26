@@ -209,14 +209,14 @@ void GameController::drop(BlockFall &game){
         
         // find upper limit of grid
         int grid_limit[block_width] = {0};
-        
+    
         for(int col = 0; col < block_width; col++){
+            grid_limit[col] = game.rows;
             for (int row = 0; row < game.rows; row++){
                 if (game.grid[row][col+block_abscissa] == 1){
                     grid_limit[col] = row;
                     break;
                 }
-                grid_limit[col] = game.rows;
             }
         }
 
@@ -257,23 +257,25 @@ void GameController::drop(BlockFall &game){
 
     }else{
         // gravity mode on
-        
-        int bottom_limit[block_width] = {0};
+
+        int grid_limit[block_width] = {0};
         for (int col = 0; col < block_width; col++){
+            grid_limit[col] = game.rows;
+
             for (int row = 0; row < game.rows; row++){
-                if (game.active_rotation->shape[row][col+block_abscissa] == 1){
-                    if(bottom_limit[col] == 0){
-                        bottom_limit[col] = row;
-                    }
+                if (game.grid[row][col+block_abscissa] == 1){
+                    grid_limit[col] = row;
+                    break;
                 }
             }
         }
+
         for (int row = block_height - 1; row >= 0; row--){
             for (int col = 0; col < block_width; col++){
                 if (game.active_rotation->shape[row][col] == 1){
-                    current_score += bottom_limit[col] - row;
-                    bottom_limit[col] -= 1;
-                    game.grid[bottom_limit[col]-1][col + block_abscissa] = 1; 
+                    current_score += grid_limit[col] - row;
+                    grid_limit[col] -= 1;
+                    game.grid[grid_limit[col]][col + block_abscissa] = 1; 
                 }
             } 
         }
