@@ -7,12 +7,19 @@ bool GameController::play(BlockFall& game, const string& commands_file){
     ifstream file(commands_file);
     std::string line;
 
+    //remove it later
+    int count = 0;
+
     if (spawn_manager(game) == false) {
         return false;
     }
 
     while (getline(file, line))
     {  
+        //remove it later
+        count++;
+        cout << "Command " << count << ": " << line << endl;
+
         //PRINT_GRID
         if(line == "PRINT_GRID\r"){
             print_command(game);
@@ -76,16 +83,7 @@ void GameController::print_game_over(BlockFall &game){
     cout << endl;
     cout << "Final grid and score:" << endl;
     cout << endl;
-    for (int row = 0; row < game.rows; row++) { // for each
-        for (int col = 0; col < game.cols; col++) {
-            if (game.grid[row][col] == 1) {
-                cout << occupiedCellChar;
-            } else {
-                cout << unoccupiedCellChar;
-            }
-        }
-        cout << endl;
-    }
+    print_grid(game);
     cout << endl;
     game.leaderboard.print_leaderboard();
 }
@@ -255,33 +253,12 @@ void GameController::drop(BlockFall &game){
                 }
             }
         }
-
         game.current_score += shift * block->ocuppied_cell_count();
 
     }else{
-        /*
         // gravity mode on
-        int bottom_limit[width];
-        for (int col = 0; col < width; col++){
-            for (int row = 0; row < game.rows; row++){
-                if (game.active_rotation->shape[row][col+block_abscissa] == 1){
-                    if(bottom_limit[col] == 0){
-                        bottom_limit[col] = row;
-                    }
-                }
-            }
-        }
-
-        for (int row = height - 1; row >= 0; row--){
-            for (int col = 0; col < width; col++){
-                if (game.active_rotation->shape[row][col] == 1){
-                    current_score += bottom_limit[col] - row;
-                    bottom_limit[col] -= 1;
-                    game.grid[bottom_limit[col]-1][col + block_abscissa] = 1; 
-                }
-            } 
-        }
-        */
+        
+       
     }
 }
 
@@ -353,15 +330,54 @@ void GameController::check_powerup(BlockFall &game){
 
 int GameController::athHighScore(BlockFall &game){
     if(game.leaderboard.head_leaderboard_entry == nullptr){
-        return this->current_score;
-    }else if(game.leaderboard.head_leaderboard_entry->score < this->current_score){
-        return this->current_score;
+        return game.current_score;
+    }else if(game.leaderboard.head_leaderboard_entry->score < game.current_score){
+        return game.current_score;
     }else{
         return game.leaderboard.head_leaderboard_entry->score;
     }
 }
 
-void GameController::print_grid_and_block(BlockFall &game){
+
+void GameController::print_grid(BlockFall &game){
+    cout << "Score: " << game.current_score << endl;
+    cout << "High Score: " << athHighScore(game) << endl;
+
+    int height = game.active_rotation->height();
+    int width = game.active_rotation->width();
+    for (int row = 0; row < game.rows; row++) { // for each
+        for (int col = 0; col < game.cols; col++) {
+            if (game.grid[row][col] == 1) {
+                cout << occupiedCellChar;
+            } else {
+                cout << unoccupiedCellChar;
+            }
+        }
+        cout << endl;
+    }
+}
+
+void GameController::print_before_clear(BlockFall &game){
+    cout << "Before clear:\n";
+    int height = game.active_rotation->height();
+    int width = game.active_rotation->width();
+    for (int row = 0; row < game.rows; row++) { // for each
+        for (int col = 0; col < game.cols; col++) {
+            if (game.grid[row][col] == 1) {
+                cout << occupiedCellChar;
+            } else {
+                cout << unoccupiedCellChar;
+            }
+        }
+        cout << endl;
+    }
+    cout << endl;
+}
+
+void GameController::print_command(BlockFall &game){
+    cout << "Score: " << game.current_score << endl;
+    cout << "High Score: " << athHighScore(game) << endl;
+    
     int height = game.active_rotation->height();
     int width = game.active_rotation->width();
     vector<vector<bool>> shape = game.active_rotation->shape;
@@ -384,33 +400,6 @@ void GameController::print_grid_and_block(BlockFall &game){
         }
         cout << "\n";
     }
-}
-
-void GameController::print_grid(BlockFall &game){
-    int height = game.active_rotation->height();
-    int width = game.active_rotation->width();
-    for (int row = 0; row < game.rows; row++) { // for each
-        for (int col = 0; col < game.cols; col++) {
-            if (game.grid[row][col] == 1) {
-                cout << occupiedCellChar;
-            } else {
-                cout << unoccupiedCellChar;
-            }
-        }
-        cout << endl;
-    }
-}
-
-void GameController::print_before_clear(BlockFall &game){
-    cout << "Before clear:\n";
-    print_grid(game);
-    cout << endl;
-}
-
-void GameController::print_command(BlockFall &game){
-    cout << "Score: " << this->current_score << endl;
-    cout << "High Score: " << athHighScore(game) << endl;
-    print_grid_and_block(game);
 }
 
 
