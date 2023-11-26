@@ -2,8 +2,6 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
-#include <thread> // REMOVE IT LATER
-#include <chrono> // REMOVE IT LATER
 
 bool GameController::play(BlockFall& game, const string& commands_file){
     ifstream file(commands_file);
@@ -14,7 +12,7 @@ bool GameController::play(BlockFall& game, const string& commands_file){
     }
 
     while (getline(file, line))
-    {
+    {  
         //PRINT_GRID
         if(line == "PRINT_GRID\r"){
             print_grid_and_score(game);
@@ -40,13 +38,27 @@ bool GameController::play(BlockFall& game, const string& commands_file){
         //GRAVITY_SWITCH
         else if(line == "GRAVITY_SWITCH\r"){
             swith_gravity(game);
+            
+            // check if powerup is activated
+            check_powerup(game);
+
+            // clear filled rows
+            clear_rows(game);
         }
         //DROP
         else if(line == "DROP\r"){
             drop(game);
+    
+            // // check if powerup is activated
+            // check_powerup(game);
+
+            // // clear any filled rows
+            // clear_rows(game);
+
+            // // spawn new block
+            // spawn_manager(game);
         }
-        //REMOVE IT LATER
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+       
     }
 
     print_no_more_commands(game);
@@ -110,9 +122,6 @@ void GameController::swith_gravity(BlockFall &game){
         }
     }
 
-    // clear filled rows
-    clear_rows(game);
-
     // switch gravity
     game.gravity_mode_on = !game.gravity_mode_on;
 }
@@ -148,9 +157,10 @@ void GameController::move_left(BlockFall &game){
 }
 
 void GameController::rotate_right(BlockFall &game){
-    vector<vector<bool>> shape = game.active_rotation->right_rotation->shape;
-    int height = game.active_rotation->right_rotation->height();
-    int width = game.active_rotation->right_rotation->width();
+    Block * right_block = game.active_rotation->right_rotation;
+    vector<vector<bool>> shape = right_block->shape;
+    int height = right_block->height();
+    int width = right_block->width();
     for (int row = 0; row < height; row++) { // for each
         for (int col = 0; col < width; col++) {
             if (shape[row][col] == 1) {
@@ -248,14 +258,7 @@ void GameController::drop(BlockFall &game){
     //     }
     // }
 
-    // // check if powerup is activated
-    // check_powerup(game);
-
-    // // clear any filled rows
-    // clear_rows(game);
-
-    // // spawn new block
-    // spawn_manager(game);
+    
 }
 
 bool GameController::spawn_manager(BlockFall &game){
@@ -339,7 +342,12 @@ void GameController::print_grid(BlockFall &game){
             if(game.grid[i][j] == 1){
                 cout << occupiedCellChar;
             }else{
-                if (i < height && block_abscissa <= j && j < width + block_abscissa && shape[i][j] == 1){
+                int shape_col = j - block_abscissa;
+                if (
+                    i >= 0 && i < height &&
+                    shape_col >= 0 && shape_col < width &&
+                    shape[i][shape_col] == 1
+                ){
                     cout << occupiedCellChar;
                 }else{
                     cout << unoccupiedCellChar;
