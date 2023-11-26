@@ -1,11 +1,11 @@
 #ifndef PA2_BLOCK_H
 #define PA2_BLOCK_H
 
-#define occupiedCellChar "⬜"
-#define unoccupiedCellChar "⬛"
+// #define occupiedCellChar "⬜"
+// #define unoccupiedCellChar "⬛"
 
-// #define occupiedCellChar "██"
-// #define unoccupiedCellChar "▒▒"
+#define occupiedCellChar "██"
+#define unoccupiedCellChar "▒▒"
 
 #include <vector>
 #include <iostream>
