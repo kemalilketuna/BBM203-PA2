@@ -49,14 +49,16 @@ bool GameController::play(BlockFall& game, const string& commands_file){
         else if(line == "DROP\r"){
             drop(game);
     
-            // // check if powerup is activated
-            // check_powerup(game);
+            // check if powerup is activated
+            check_powerup(game);
 
-            // // clear any filled rows
-            // clear_rows(game);
+            // clear any filled rows
+            clear_rows(game);
 
-            // // spawn new block
-            // spawn_manager(game);
+            // spawn new block
+            if (spawn_manager(game) == false) {
+                return false;
+            }
         }
        
     }
@@ -270,6 +272,10 @@ bool GameController::spawn_manager(BlockFall &game){
     block_abscissa = 0;
     if (game.current_score > 0){
         game.active_rotation = game.active_rotation->next_block;
+        if (game.active_rotation == nullptr) {
+            print_no_more_blocks(game);
+            return false;
+        }
     }
 
     // if can spawn, spawn
