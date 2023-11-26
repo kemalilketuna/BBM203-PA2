@@ -8,6 +8,9 @@ bool GameController::play(BlockFall& game, const string& commands_file){
     std::string line;
 
     if (spawn_manager(game) == false) {
+        LeaderboardEntry * entry = new LeaderboardEntry(game.current_score, 1699282137, game.player_name);
+        game.leaderboard.insert_new_entry(entry);
+        game.leaderboard.write_to_file(game.leaderboard_file_name);
         return false;
     }
 
@@ -57,6 +60,10 @@ bool GameController::play(BlockFall& game, const string& commands_file){
 
             // spawn new block
             if (spawn_manager(game) == false) {
+                // score, time now, string name
+                LeaderboardEntry * entry = new LeaderboardEntry(game.current_score, 1699282137, game.player_name);
+                game.leaderboard.insert_new_entry(entry);
+                game.leaderboard.write_to_file(game.leaderboard_file_name);
                 return false;
             }
         }
@@ -66,6 +73,9 @@ bool GameController::play(BlockFall& game, const string& commands_file){
     print_no_more_commands(game);
     cout << endl;
     cout << endl;
+    LeaderboardEntry * entry = new LeaderboardEntry(game.current_score, 1699282137, game.player_name);
+    game.leaderboard.insert_new_entry(entry);
+    game.leaderboard.write_to_file(game.leaderboard_file_name);
     return false;
 }
 
@@ -318,24 +328,48 @@ void GameController::clear_rows(BlockFall &game){
 
 }
 
+bool isSubMatrix(const vector<vector<int>>& bigMatrix, const vector<vector<bool>>& smallMatrix) {
+    int bigRows = bigMatrix.size();
+    int bigCols = bigMatrix[0].size();
+    int smallRows = smallMatrix.size();
+    int smallCols = smallMatrix[0].size();
+
+    for (int i = 0; i <= bigRows - smallRows; ++i) {
+        for (int j = 0; j <= bigCols - smallCols; ++j) {
+            bool match = true;
+
+            for (int x = 0; x < smallRows; ++x) {
+                for (int y = 0; y < smallCols; ++y) {
+                    if (bigMatrix[i + x][j + y] != smallMatrix[x][y]) {
+                        match = false;
+                        break;
+                    }
+                }
+                if (!match) break;
+            }
+
+            if (match) return true;
+        }
+    }
+    return false;
+}
+
 // !!!!!! CHECK THIS FUNCTION !!!!!!
 void GameController::check_powerup(BlockFall &game){
-    // // check if powerup is activated
-    // if (std::all_of(game.power_up.begin(), game.power_up.end(), [](vector<bool> i) { return std::all_of(i.begin(), i.end(), [](bool j) { return j == 1; }); })) {
-        
-        
-    //     print_before_clear(game);
-    //     // increase score
-    //     int cell = 0;
-    //     for (int row = 0; row < game.rows; row++) { // for each
-    //         cell += std::count(game.grid[row].begin(), game.grid[row].end(), 1);
-    //     }
-    //     game.current_score += cell + 1000;
-    //     // clear grid
-    //     for (int row = 0; row < game.rows; row++) { // for each
-    //         game.grid[row].clear();
-    //     }
-    // }
+    // check if powerup is activated
+    if (isSubMatrix(game.grid, game.power_up)) {
+        print_before_clear(game);
+        // increase score
+        int cell = 0;
+        for (int row = 0; row < game.rows; row++) { // for each
+            cell += std::count(game.grid[row].begin(), game.grid[row].end(), 1);
+        }
+        game.current_score += cell + 1000;
+        // clear grid
+        for (int row = 0; row < game.rows; row++) { // for each
+            game.grid[row].clear();
+        }
+    }
 }
 
 int GameController::athHighScore(BlockFall &game){
@@ -353,8 +387,6 @@ void GameController::print_grid(BlockFall &game){
     cout << "Score: " << game.current_score << endl;
     cout << "High Score: " << athHighScore(game) << endl;
 
-    int height = game.active_rotation->height();
-    int width = game.active_rotation->width();
     for (int row = 0; row < game.rows; row++) { // for each
         for (int col = 0; col < game.cols; col++) {
             if (game.grid[row][col] == 1) {
