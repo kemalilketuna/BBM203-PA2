@@ -27,6 +27,26 @@ public:
         return false;
     }
 
+    int height() {
+        return this->shape.size();
+    }
+
+    int width() {
+        return this->shape.at(0).size();
+    }
+
+    int occupied_cell_count() {
+        int count = 0;
+        for (int i = 0; i < this->height(); i++) {
+            for (int j = 0; j < this->width(); j++) {
+                if (this->shape[i][j]) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
     vector<vector<bool>> cw_90_rotation(vector<vector<bool>> & matrix) {
         int n = matrix.size();
         int m = matrix.at(0).size();
