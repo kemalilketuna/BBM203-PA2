@@ -2,7 +2,7 @@
 #include "GameController.h"
 #include <iostream>
 
-int main(int argc, string*argv) {
+int main(int argc, char ** argv) {
     string first = "samples/1_big_grid_gravity_switch/grid.dat";
     string second = "samples/1_big_grid_gravity_switch/blocks.dat";
     string third = "samples/1_big_grid_gravity_switch/commands.dat";
