@@ -48,10 +48,10 @@ void Leaderboard::insert_new_entry(LeaderboardEntry* new_entry) {
 // Write to file
 void Leaderboard::write_to_file(const string& filename) {
     std::ofstream file(filename);
-    if (!file.is_open()) {
-        std::cerr << "Failed to open file for writing: " << filename << std::endl;
-        return;
-    }
+    // if (!file.is_open()) {
+    //     std::cerr << "Failed to open file for writing: " << filename << std::endl;
+    //     return;
+    // }
 
     LeaderboardEntry* current = head_leaderboard_entry;
     while (current != nullptr) {
@@ -65,10 +65,10 @@ void Leaderboard::write_to_file(const string& filename) {
 // Read from file
 void Leaderboard::read_from_file(const string& filename) {
     std::ifstream file(filename);
-    if (!file.is_open()) {
-        std::cerr << "Failed to open file for reading: " << filename << std::endl;
-        return;
-    }
+    // if (!file.is_open()) {
+    //     std::cerr << "Failed to open file for reading: " << filename << std::endl;
+    //     return;
+    // }
 
     unsigned long score;
     time_t lastPlayed;

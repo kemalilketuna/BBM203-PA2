@@ -8,7 +8,6 @@ using namespace std;
 class GameController {
 public:
     bool play(BlockFall &game, const string &commands_file); // Function that implements the gameplay
-
 private:
     int block_abscissa = 0; // Variable that stores the abscissa of the block
     int current_score = 0; // Variable that stores the current score
