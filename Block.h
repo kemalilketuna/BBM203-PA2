@@ -1,7 +1,11 @@
 #ifndef PA2_BLOCK_H
 #define PA2_BLOCK_H
 
+#define occupiedCellChar "██"
+#define unoccupiedCellChar "▒▒"
+
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
@@ -57,6 +61,19 @@ public:
             }
         }
         return rotated_matrix;
+    }
+
+    void print(){
+        for (int i = 0; i < this->height(); i++) {
+            for (int j = 0; j < this->width(); j++) {
+                if (this->shape[i][j]) {
+                    cout << occupiedCellChar;
+                }else{
+                    cout << unoccupiedCellChar;
+                }
+            }
+            cout << endl;
+        }
     }
 
     void set_shape(vector<vector<bool>> shape) {
